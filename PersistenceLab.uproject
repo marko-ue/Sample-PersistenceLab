@@ -1,0 +1,59 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{33EBF6C0-46D6-0714-73BE-7EA226015363}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "PersistenceLab",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"AIModule",
+				"UMG"
+			]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "ModelingToolsEditorMode",
+			"Enabled": true,
+			"TargetAllowList": [
+				"Editor"
+			]
+		},
+		{
+			"Name": "StateTree",
+			"Enabled": true
+		},
+		{
+			"Name": "GameplayStateTree",
+			"Enabled": true
+		},
+		{
+			"Name": "GameplayAbilities",
+			"Enabled": true
+		},
+		{
+			"Name": "LevelStreamingPersistence",
+			"Enabled": true
+		},
+		{
+			"Name": "PersistenceExamples",
+			"Enabled": true
+		},
+		{
+			"Name": "PersistenceUtils",
+			"Enabled": true
+		},
+		{
+			"Name": "PCGInstancedActorsInterop",
+			"Enabled": true
+		},
+		{
+			"Name": "MassAI",
+			"Enabled": true
+		}
+	]
+}
