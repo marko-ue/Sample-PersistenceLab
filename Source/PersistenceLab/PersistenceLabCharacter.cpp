@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Engine/LocalPlayer.h"
 #include "GAS/HealthAttributeSet.h"
+#include "GAS/PersistedAbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -65,7 +66,7 @@ APersistenceLabCharacter::APersistenceLabCharacter()
 	AIControllerClass = APersistenceAIController::StaticClass();
 
 	// GAS surface. Player pawn -> Full replication mode (vs Mixed on world actors like ADestructibleCrate).
-	AbilitySystemComp = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComp"));
+	AbilitySystemComp = CreateDefaultSubobject<UPersistedAbilitySystemComponent>(TEXT("AbilitySystemComp"));
 	AbilitySystemComp->SetIsReplicated(true);
 	AbilitySystemComp->SetReplicationMode(EGameplayEffectReplicationMode::Full);
 	HealthSet = CreateDefaultSubobject<UHealthAttributeSet>(TEXT("HealthSet"));
