@@ -18,6 +18,8 @@
 #include "Serialization/MemoryWriter.h"
 #include "Serialization/MemoryReader.h"
 #include "Serialization/StructuredArchive.h"
+#include "Serialization/CustomVersion.h"
+#include "UObject/ObjectVersion.h"
 #include "MassSimulationSubsystem.h"
 
 bool UPersistenceWorldSubsystem::IsTransitionWorld(const UWorld* World)
@@ -388,11 +390,39 @@ void UPersistenceWorldSubsystem::FlushInstancedActorManagerDataForLevel(UWorld* 
 			continue;
 		}
 
+		// Pass 1: serialize the manager body into a temp buffer. The set of custom versions touched
+		// (e.g. FInstancedActorsCustomVersion, and any UsingCustomVersion calls inside an IAC's
+		// SerializeInstancePersistenceData) isn't known until the body has been written, since each
+		// UsingCustomVersion call populates the archive's container during Serialize. So we collect the
+		// container afterwards and write it as a leading header in pass 2.
+		TArray<uint8> BodyData;
+		FMemoryWriter BodyWriter(BodyData);
+		BodyWriter.ArIsSaveGame = true;
+		{
+			FStructuredArchiveFromArchive StructuredAr(BodyWriter);
+			Manager->Serialize(StructuredAr.GetSlot().EnterRecord());
+		}
+
+		if (BodyWriter.IsError() || BodyData.Num() == 0)
+		{
+			UE_LOG(LogPersistenceUtils, Warning, TEXT("FlushInstancedActorManagerDataForLevel: Skipping manager '%s' — serialize produced no data or errored."), *Manager->GetName());
+			continue;
+		}
+
+		// Pass 2: write [UEVersion][CustomVersions][body] into the stored blob. UEVersion is the
+		// FPackageFileVersion axis (drives Ar.UEVer()-gated migrations like LWC); the custom-version
+		// container carries the GUID-keyed versions that Ar.CustomVer() reads on load. Without this header
+		// a bare FMemoryReader resets its container to the live registry, so CustomVer() would always
+		// report the current build's version rather than the saved one.
+		FPackageFileVersion UEVersion = GPackageFileUEVersion;
+		FCustomVersionContainer CustomVersions = BodyWriter.GetCustomVersions();
+
 		TArray<uint8> Data;
 		FMemoryWriter MemWriter(Data);
 		MemWriter.ArIsSaveGame = true;
-		FStructuredArchiveFromArchive StructuredAr(MemWriter);
-		Manager->Serialize(StructuredAr.GetSlot().EnterRecord());
+		MemWriter << UEVersion;
+		CustomVersions.Serialize(MemWriter);
+		MemWriter.Serialize(BodyData.GetData(), BodyData.Num());
 
 		if (!MemWriter.IsError() && Data.Num() > 0)
 		{
@@ -400,7 +430,7 @@ void UPersistenceWorldSubsystem::FlushInstancedActorManagerDataForLevel(UWorld* 
 		}
 		else
 		{
-			UE_LOG(LogPersistenceUtils, Warning, TEXT("FlushInstancedActorManagerDataForLevel: Skipping manager '%s' — serialize produced no data or errored."), *Manager->GetName());
+			UE_LOG(LogPersistenceUtils, Warning, TEXT("FlushInstancedActorManagerDataForLevel: Skipping manager '%s' — failed to assemble versioned blob."), *Manager->GetName());
 		}
 	}
 }
@@ -499,6 +529,18 @@ void UPersistenceWorldSubsystem::RestoreManager(AInstancedActorsManager* Manager
 	// Entities are intentionally not spawned yet - this path touches no Mass fragments.
 	FMemoryReader MemReader(State->Data);
 	MemReader.ArIsSaveGame = true;
+
+	// Read the [UEVersion][CustomVersions] header written by FlushInstancedActorManagerDataForLevel and
+	// apply it to the reader BEFORE deserializing the body. SetCustomVersions clears the reader's
+	// reset-to-live-registry flag, so Ar.CustomVer(GUID) inside IAM::Serialize / an IAC's
+	// SerializeInstancePersistenceData returns the version that was saved rather than the current build's.
+	FPackageFileVersion UEVersion;
+	FCustomVersionContainer CustomVersions;
+	MemReader << UEVersion;
+	CustomVersions.Serialize(MemReader);
+	MemReader.SetUEVer(UEVersion);
+	MemReader.SetCustomVersions(CustomVersions);
+
 	FStructuredArchiveFromArchive StructuredAr(MemReader);
 	Manager->Serialize(StructuredAr.GetSlot().EnterRecord());
 

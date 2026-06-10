@@ -2,6 +2,7 @@
 
 #include "InstancedActors/ExampleInstancedActorComponent.h"
 #include "InstancedActors/ExampleInstancedActorsData.h"
+#include "InstancedActors/ExampleInstancedActorVersion.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
 #include "Components/StaticMeshComponent.h"
@@ -23,7 +24,6 @@
 namespace ExampleIAC
 {
 	constexpr uint32 PersistenceDataID = 0x45494143; // 'EIAC'
-	constexpr uint8 PersistenceFormatVersion = 1;
 
 	static UHealthAttributeSet* FindOwnerHealthSet(AActor* Owner)
 	{
@@ -240,15 +240,21 @@ void UExampleInstancedActorComponent::SerializeInstancePersistenceData(FStructur
 {
 	FArchive& Ar = Record.GetUnderlyingArchive();
 
-	uint8 Version = ExampleIAC::PersistenceFormatVersion;
-	Record << SA_VALUE(TEXT("Version"), Version);
-	// On load, an unknown version means we shouldn't trust the rest of the record; bail in a way that
-	// still consumes the body shape (best effort - the archive seek is handled by the IAM caller).
-	if (Ar.IsLoading() && Version != ExampleIAC::PersistenceFormatVersion)
+	// Versioning via the archive's custom-version container instead of a hand-rolled byte. On a saving
+	// archive UsingCustomVersion copies LatestVersion from the process-global registry into the container;
+	// on a loading archive it's a no-op and CustomVer returns the version that was saved (the transport,
+	// UPersistenceWorldSubsystem, persists the FCustomVersionContainer alongside this blob and restores it
+	// onto the reader before Serialize runs). See FExampleInstancedActorVersion.
+	Ar.UsingCustomVersion(FExampleInstancedActorVersion::GUID);
+	const int32 Version = Ar.CustomVer(FExampleInstancedActorVersion::GUID);
+
+	// On load, a record older than our first versioned layout can't be trusted; warn (the archive seek
+	// past this record's body is handled by the IAM caller via the IAC size header).
+	if (Ar.IsLoading() && Version < FExampleInstancedActorVersion::InitialVersion)
 	{
 		UE_LOG(LogPersistenceExamples, Warning,
-			TEXT("ExampleInstancedActorComponent: unknown persistence version %d (expected %d) — skipping record."),
-			Version, ExampleIAC::PersistenceFormatVersion);
+			TEXT("ExampleInstancedActorComponent: unsupported persistence version %d (expected >= %d) — skipping record."),
+			Version, static_cast<int32>(FExampleInstancedActorVersion::InitialVersion));
 	}
 
 	// Save-time: gather sparse overrides vs. the IAD's defaults (viz 0, health 100/100).
@@ -450,20 +456,17 @@ void UExampleInstancedActorComponent::NotifyHealthChanged(float NewHealth, float
 
 void UExampleInstancedActorComponent::DestroyInstance()
 {
-	if (!HasMassEntity())
+	if (HasMassEntity())
 	{
-		return;
+		InstanceHandle.GetInstanceActorDataChecked().DestroyInstance(InstanceHandle.GetInstanceIndex());
 	}
-	InstanceHandle.GetInstanceActorDataChecked().DestroyInstance(InstanceHandle.GetInstanceIndex());
 }
 
 void UExampleInstancedActorComponent::EjectInstance()
 {
 	AActor* Owner = GetOwner();
-	if (!Owner || !HasMassEntity())
+	if (Owner && HasMassEntity())
 	{
-		return;
+		InstanceHandle.GetInstanceActorDataChecked().EjectInstanceActor(InstanceHandle.GetInstanceIndex(), *Owner);
 	}
-	InstanceHandle.GetInstanceActorDataChecked().
-		EjectInstanceActor(InstanceHandle.GetInstanceIndex(), *Owner);
 }
