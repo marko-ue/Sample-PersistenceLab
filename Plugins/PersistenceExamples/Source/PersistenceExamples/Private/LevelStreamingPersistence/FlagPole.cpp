@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "LevelStreamingPersistence/FlagPole.h"
-#include "Components/PersistableReferencedActorComponent.h"
+#include "References/PersistableReferencedActorComponent.h"
 
 AFlagPole::AFlagPole()
 {

@@ -6,7 +6,7 @@
 #include "Engine/EngineBaseTypes.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "Data/PersistenceDataTypes.h"
-#include "Libraries/MassPersistenceUtils.h"
+#include "MassPersistence/MassPersistenceUtils.h"
 #include "PersistenceWorldSubsystem.generated.h"
 
 class ULevelStreaming;

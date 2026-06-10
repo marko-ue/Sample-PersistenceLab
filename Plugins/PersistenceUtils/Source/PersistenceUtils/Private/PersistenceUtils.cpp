@@ -5,7 +5,7 @@
 #include "Components/SceneComponent.h"
 #include "Engine/Level.h"
 #include "Engine/World.h"
-#include "Framework/PersistableActorReferenceManager.h"
+#include "References/PersistableActorReferenceManager.h"
 #include "Framework/PersistedObjectInterface.h"
 #include "GameFramework/Actor.h"
 #include "LevelStreamingPersistenceModule.h"

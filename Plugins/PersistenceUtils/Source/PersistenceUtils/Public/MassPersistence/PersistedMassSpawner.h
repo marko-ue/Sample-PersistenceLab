@@ -4,19 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "MassSpawner.h"
-#include "PersistenceMassSpawner.generated.h"
+#include "PersistedMassSpawner.generated.h"
 
 /**
  * A Mass spawner that skips spawning if ShouldSpawnEntities() returns false.
  * On first spawn, sets bHasEverSpawned = true after DoSpawning completes.
  */
 UCLASS(Blueprintable)
-class PERSISTENCEUTILS_API APersistenceMassSpawner : public AMassSpawner
+class PERSISTENCEUTILS_API APersistedMassSpawner : public AMassSpawner
 {
 	GENERATED_BODY()
 
 public:
-	APersistenceMassSpawner();
+	APersistedMassSpawner();
 
 protected:
 	virtual void BeginPlay() override;
@@ -40,7 +40,7 @@ protected:
 	// of this actor and add this section to your DefaultEngine.ini:
 	//
 	// [/Script/LevelStreamingPersistence.LevelStreamingPersistenceSettings]
-	// +Properties=(Path="/Script/PersistenceUtils.PersistenceMassSpawner:bHasEverSpawned",bIsPublic=False)
+	// +Properties=(Path="/Script/PersistenceUtils.PersistedMassSpawner:bHasEverSpawned",bIsPublic=False)
 	//
 	// Alternatively, override ShouldSpawnEntities() to implement custom checks,
 	// like polling from your custom USaveGame.

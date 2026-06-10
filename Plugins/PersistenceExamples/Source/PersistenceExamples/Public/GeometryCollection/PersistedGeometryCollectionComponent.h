@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Framework/PersistedObjectInterface.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
-#include "PersistableGeometryCollectionComponent.generated.h"
+#include "PersistedGeometryCollectionComponent.generated.h"
 
 USTRUCT(BlueprintType)
 struct FPersistedGeometryCollectionState
@@ -45,7 +45,7 @@ struct FPersistedGeometryCollectionState
  * Velocity is not persisted; pieces resume from a stop. Acceptable when saves are quiescent.
  */
 UCLASS(ClassGroup=(Persistence), meta=(BlueprintSpawnableComponent))
-class PERSISTENCEEXAMPLES_API UPersistableGeometryCollectionComponent : public UGeometryCollectionComponent, public IPersistedObject
+class PERSISTENCEEXAMPLES_API UPersistedGeometryCollectionComponent : public UGeometryCollectionComponent, public IPersistedObject
 {
 	GENERATED_BODY()
 

@@ -6,7 +6,7 @@
 #include "Mass/EntityElementTypes.h"
 #include "Mass/ExternalSubsystemTraits.h"
 #include "MassEntityTraitBase.h"
-#include "PersistableEntityConfigFragment.generated.h"
+#include "PersistableEntityConfigTrait.generated.h"
 
 class UMassEntityConfigAsset;
 
@@ -17,7 +17,7 @@ class UMassEntityConfigAsset;
  * to its source config, avoiding cross-matching between configs that share fragment composition.
  *
  * Added to an entity's archetype by UPersistableEntityConfigTrait. The value is stamped after spawn
- * by APersistenceMassSpawner (using GetFragmentDataChecked — no archetype migration), and re-stamped
+ * by APersistedMassSpawner (using GetFragmentDataChecked — no archetype migration), and re-stamped
  * by RestoreEntities after re-creating entities from a saved snapshot. The fragment is NOT
  * byte-serialized into snapshots — the raw TObjectPtr would be meaningless across sessions.
  */
@@ -45,7 +45,7 @@ struct TMassFragmentTraits<FPersistableEntityConfigFragment> final
 /**
  * Mass entity trait that opts an entity config into the persistence flow by adding
  * FPersistableEntityConfigFragment to the resulting archetype. The fragment's value is stamped by
- * APersistenceMassSpawner after spawn (or by UMassPersistenceUtils::RestoreEntities after restore).
+ * APersistedMassSpawner after spawn (or by UMassPersistenceUtils::RestoreEntities after restore).
  * SnapshotEntities then queries for entities containing this fragment, groups them by EntityConfig,
  * and produces one FMassEntityConfigGroupSnapshot per config.
  */

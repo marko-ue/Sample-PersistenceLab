@@ -1,9 +1,9 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "Libraries/MassPersistenceUtils.h"
+#include "MassPersistence/MassPersistenceUtils.h"
 #include "PersistenceUtils.h"
 #include "PersistenceUtilsSettings.h"
-#include "Data/PersistableEntityConfigFragment.h"
+#include "MassPersistence/PersistableEntityConfigTrait.h"
 #include "MassEntityConfigAsset.h"
 #include "MassEntityTemplate.h"
 #include "MassEntityManager.h"

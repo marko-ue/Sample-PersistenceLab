@@ -1,10 +1,10 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "Components/PersistableReferencedActorComponent.h"
+#include "References/PersistableReferencedActorComponent.h"
 
 #include "Engine/Level.h"
 #include "Engine/World.h"
-#include "Framework/PersistableActorReferenceManager.h"
+#include "References/PersistableActorReferenceManager.h"
 #include "GameFramework/Actor.h"
 #include "PersistenceUtils.h"
 

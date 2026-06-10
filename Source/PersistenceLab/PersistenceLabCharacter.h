@@ -4,7 +4,7 @@
 
 #include "AbilitySystemInterface.h"
 #include "CoreMinimal.h"
-#include "Data/PersistableActorReference.h"
+#include "References/PersistableActorReference.h"
 #include "Framework/PersistedObjectInterface.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/PersistableActorReference.h"
+#include "References/PersistableActorReference.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
 #include "ResolvePersistableActorReferenceAction.generated.h"
 

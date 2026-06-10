@@ -3,7 +3,7 @@
 #include "GAS/DestructibleCrate.h"
 #include "AbilitySystemComponent.h"
 #include "GAS/HealthAttributeSet.h"
-#include "GeometryCollection/PersistableGeometryCollectionComponent.h"
+#include "GeometryCollection/PersistedGeometryCollectionComponent.h"
 #include "PersistenceExamples.h"
 
 ADestructibleCrate::ADestructibleCrate()
@@ -11,7 +11,7 @@ ADestructibleCrate::ADestructibleCrate()
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
 
-	GeometryCollection = CreateDefaultSubobject<UPersistableGeometryCollectionComponent>(TEXT("GeometryCollection"));
+	GeometryCollection = CreateDefaultSubobject<UPersistedGeometryCollectionComponent>(TEXT("GeometryCollection"));
 	SetRootComponent(GeometryCollection);
 
 	AbilitySystemComp = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComp"));

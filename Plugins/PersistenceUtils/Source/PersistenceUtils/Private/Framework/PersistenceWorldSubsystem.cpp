@@ -2,7 +2,7 @@
 
 #include "Framework/PersistenceWorldSubsystem.h"
 #include "Framework/PersistenceGameSubsystem.h"
-#include "Libraries/MassPersistenceUtils.h"
+#include "MassPersistence/MassPersistenceUtils.h"
 #include "PersistenceUtils.h"
 #include "PersistenceUtilsSettings.h"
 #include "Engine/PlayerStartPIE.h"

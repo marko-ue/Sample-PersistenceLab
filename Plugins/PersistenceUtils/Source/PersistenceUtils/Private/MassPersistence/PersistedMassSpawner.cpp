@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "Framework/PersistenceMassSpawner.h"
-#include "Data/PersistableEntityConfigFragment.h"
+#include "MassPersistence/PersistedMassSpawner.h"
+#include "MassPersistence/PersistableEntityConfigTrait.h"
 #include "PersistenceUtils.h"
 #include "MassEntityConfigAsset.h"
 #include "MassEntityManager.h"
@@ -9,23 +9,23 @@
 #include "MassEntityTemplate.h"
 #include "MassSpawnerTypes.h"
 
-APersistenceMassSpawner::APersistenceMassSpawner()
+APersistedMassSpawner::APersistedMassSpawner()
 {
 	bAutoSpawnOnBeginPlay = false;
 }
 
-void APersistenceMassSpawner::BeginPlay()
+void APersistedMassSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 
 	if (ShouldSpawnEntities())
 	{
-		OnSpawningFinishedEvent.AddDynamic(this, &APersistenceMassSpawner::OnSpawningFinished);
+		OnSpawningFinishedEvent.AddDynamic(this, &APersistedMassSpawner::OnSpawningFinished);
 		DoSpawning();
 	}
 }
 
-void APersistenceMassSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void APersistedMassSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	// Clear tracked entities so AMassSpawner::EndPlay's DoDespawning has nothing to act on.
 	// Spawned entities are managed externally (serialized and restored via save game).
@@ -33,20 +33,20 @@ void APersistenceMassSpawner::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-bool APersistenceMassSpawner::ShouldSpawnEntities() const
+bool APersistedMassSpawner::ShouldSpawnEntities() const
 {
 	return !bHasEverSpawned;
 }
 
-void APersistenceMassSpawner::OnSpawningFinished()
+void APersistedMassSpawner::OnSpawningFinished()
 {
-	OnSpawningFinishedEvent.RemoveDynamic(this, &APersistenceMassSpawner::OnSpawningFinished);
+	OnSpawningFinishedEvent.RemoveDynamic(this, &APersistedMassSpawner::OnSpawningFinished);
 	bHasEverSpawned = true;
 
 	StampOriginFragmentOnSpawnedEntities();
 }
 
-void APersistenceMassSpawner::StampOriginFragmentOnSpawnedEntities()
+void APersistedMassSpawner::StampOriginFragmentOnSpawnedEntities()
 {
 	UMassEntitySubsystem* EntitySubsystem = GetWorld()->GetSubsystem<UMassEntitySubsystem>();
 	if (!EntitySubsystem)

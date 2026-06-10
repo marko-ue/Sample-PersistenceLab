@@ -1,6 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "Framework/PersistableActorReferenceManager.h"
+#include "References/PersistableActorReferenceManager.h"
 
 #include "Engine/Engine.h"
 #include "Engine/Level.h"

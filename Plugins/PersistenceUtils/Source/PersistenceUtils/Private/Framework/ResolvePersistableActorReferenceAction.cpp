@@ -4,7 +4,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/World.h"
-#include "Framework/PersistableActorReferenceManager.h"
+#include "References/PersistableActorReferenceManager.h"
 #include "GameFramework/Actor.h"
 #include "TimerManager.h"
 

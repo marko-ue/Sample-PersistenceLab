@@ -1,11 +1,11 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "GeometryCollection/PersistableGeometryCollectionComponent.h"
+#include "GeometryCollection/PersistedGeometryCollectionComponent.h"
 #include "GeometryCollectionProxyData.h"
 #include "PersistenceExamples.h"
 #include "PhysicsProxy/GeometryCollectionPhysicsProxy.h"
 
-void UPersistableGeometryCollectionComponent::PrePersistObject_Implementation()
+void UPersistedGeometryCollectionComponent::PrePersistObject_Implementation()
 {
 	PersistedState.PieceTransforms.Reset();
 	PersistedState.BrokenIndices.Reset();
@@ -39,7 +39,7 @@ void UPersistableGeometryCollectionComponent::PrePersistObject_Implementation()
 		*GetNameSafe(GetOwner()), PersistedState.PieceTransforms.Num(), PersistedState.BrokenIndices.Num());
 }
 
-void UPersistableGeometryCollectionComponent::PostRestoreObject_Implementation(const TArray<FName>& RestoredPropertyNames)
+void UPersistedGeometryCollectionComponent::PostRestoreObject_Implementation(const TArray<FName>& RestoredPropertyNames)
 {
 	if (PersistedState.PieceTransforms.Num() == 0)
 	{

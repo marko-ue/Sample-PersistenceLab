@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/PersistableActorReference.h"
+#include "References/PersistableActorReference.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "UObject/SoftObjectPath.h"
 #include "UObject/WeakObjectPtr.h"

@@ -9,12 +9,12 @@
 
 class UAbilitySystemComponent;
 class UHealthAttributeSet;
-class UPersistableGeometryCollectionComponent;
+class UPersistedGeometryCollectionComponent;
 
 /**
  * Actor base for the destructible-crate demo. Owns an ASC + UHealthAttributeSet. LSP persists
  * Health / MaxHealth directly on the AttributeSet subobject, and per-piece fracture pose on the
- * UPersistableGeometryCollectionComponent (see Config/DefaultEngine.ini entries under
+ * UPersistedGeometryCollectionComponent (see Config/DefaultEngine.ini entries under
  * LevelStreamingPersistenceSettings). The crate itself carries no LSP-persisted actor properties.
  */
 UCLASS()
@@ -30,7 +30,7 @@ public:
 
 	/** Fracturable mesh + persistence root. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Crate")
-	TObjectPtr<UPersistableGeometryCollectionComponent> GeometryCollection;
+	TObjectPtr<UPersistedGeometryCollectionComponent> GeometryCollection;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="GAS")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComp;
